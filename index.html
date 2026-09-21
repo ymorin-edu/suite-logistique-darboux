@@ -558,6 +558,47 @@
     #floatingCalculatorRoot{ right: 14px; bottom: 14px; }
     .calc-panel{ width: 220px; }
   }
+
+  /* ---- Corrigés projetables (correction collective au tableau) ---- */
+  .corrige-toolbar{
+    display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;
+    background: var(--panel); border:1px solid var(--line); border-radius: var(--radius);
+    padding: 12px 16px; position: sticky; top: 0; z-index: 5;
+  }
+  .corrige-progress{ display:flex; align-items:center; gap:10px; font-family: var(--mono); font-size:13px; color: var(--ink-soft); }
+  .corrige-progress-track{ width:120px; height:7px; background:#f0eee7; border:1px solid var(--line); border-radius:20px; overflow:hidden; }
+  .corrige-progress-fill{ height:100%; background: var(--orange); width:0%; transition: width .3s ease; }
+  .corrige-toolbar-btns{ display:flex; gap:8px; flex-wrap:wrap; }
+  .corrige-row-current td{ background: #fff9f4; }
+  .corrige-placeholder{ color: var(--ink-soft); font-style: italic; font-size:12.5px; text-align:center; padding: 14px 8px !important; }
+  .corrige-ecart{ font-family: var(--mono); font-weight:700; }
+  .corrige-ecart-neg{ color: var(--danger); }
+  .corrige-ecart-pos{ color: var(--steel); }
+  .corrige-ecart-zero{ color: var(--green); }
+  .corrige-badge{
+    display:inline-block; font-size:11.5px; font-weight:700; padding:3px 9px; border-radius: 20px; white-space:nowrap;
+  }
+  .corrige-badge-conforme{ background:#eaf5ec; color: var(--green); }
+  .corrige-badge-manquant{ background:#fbeceb; color: var(--danger); }
+  .corrige-badge-avarie{ background:#fef3e0; color: #a86a00; }
+  .corrige-badge-surplus{ background:#eef3f4; color: var(--steel); }
+  .corrige-cards{ display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:12px; }
+  .corrige-card{
+    background: var(--panel); border:1px solid var(--line); border-left:4px solid var(--line);
+    border-radius: var(--radius); padding:14px;
+  }
+  .corrige-card-current{ outline: 2px solid var(--orange); outline-offset:2px; }
+  .corrige-card-manquant{ border-left-color: var(--danger); }
+  .corrige-card-avarie{ border-left-color: #d99a1a; }
+  .corrige-card-surplus{ border-left-color: var(--steel); }
+  .corrige-card-placeholder{
+    border-style:dashed; color: var(--ink-soft); font-style:italic; font-size:12.5px; display:flex;
+    align-items:center; justify-content:center; min-height:70px; text-align:center;
+  }
+  .corrige-card-top{ display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; }
+  @media (max-width:640px){
+    .corrige-toolbar{ position: static; }
+  }
 </style>
 </head>
 <body>
@@ -4106,6 +4147,8 @@ const CALCUL_TEMPLATES = {
       else if(state.view === "groupe-select") renderGroupeSelect(content);
       else if(state.view === "code-lock") renderCodeLock(content);
       else if(state.view === "cours-docs") renderCoursDocs(content);
+      else if(state.view === "corriges") renderCorriges(content);
+      else if(state.view === "corrige-reception") renderCorrigeReception(content);
       else if(state.view === "referentiel") renderReferentiel(content);
       else if(state.view === "livret") renderLivret(content);
       else if(state.view === "module") renderModule(content);
@@ -4258,6 +4301,11 @@ const CALCUL_TEMPLATES = {
           <div class="title">Livret de compétences</div>
           <div class="desc">Toutes les notes d'un groupe centralisées, avec export CSV.</div>
         </button>
+        <button class="module-tile admin" id="corrigesTile">
+          <span class="code">CORRIGÉS</span>
+          <div class="title">Corrigés projetables</div>
+          <div class="desc">Corrections à révéler ligne par ligne au vidéoprojecteur, pour la correction collective.</div>
+        </button>
       </div>
     ` : "";
 
@@ -4324,6 +4372,7 @@ const CALCUL_TEMPLATES = {
         state.view = "groupe-select";
         render();
       });
+      document.getElementById("corrigesTile").addEventListener("click", () => { state.view = "corriges"; render(); });
     }
     content.querySelectorAll(".module-tile[data-module]").forEach(btn => {
       btn.addEventListener("click", async () => {
@@ -4611,6 +4660,162 @@ const CALCUL_TEMPLATES = {
         );
       });
     });
+  }
+
+  /* ============ RENDER : CORRIGÉS PROJETABLES (enseignant uniquement) ============ */
+  const CORRIGES = [
+    { id: "reception", titre: "Contrôle réception marchandises", desc: "Bon de contrôle (11 références) et réserves rédigées, à révéler ligne par ligne au tableau." }
+  ];
+
+  function renderCorriges(content){
+    const rows = CORRIGES.map(c => `
+      <div class="excel-step">
+        <div class="excel-step-num">📋</div>
+        <div class="excel-step-body">
+          <div class="excel-step-title">${c.titre}</div>
+          <div class="excel-step-objectif">${c.desc}</div>
+        </div>
+        <div class="excel-step-actions">
+          <button class="btn-ghost corrige-open-btn" data-corrige="${c.id}">Ouvrir</button>
+        </div>
+      </div>
+    `).join("");
+
+    content.innerHTML = `
+      <button class="back-link" id="backBtn">&larr; Retour au menu</button>
+      <div class="menu-intro" style="margin-top:16px;">
+        <h1>Corrigés projetables</h1>
+        <p>Corrections à afficher au vidéoprojecteur pendant la correction collective, révélées ligne par ligne. Réservé à l'enseignant.</p>
+      </div>
+      <div class="panel" style="margin-top:16px;">
+        <div class="excel-steps-list">${rows}</div>
+      </div>
+    `;
+    document.getElementById("backBtn").addEventListener("click", () => { state.view = "menu"; render(); });
+    content.querySelectorAll(".corrige-open-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        // un seul corrigé pour l'instant ; utiliser btn.dataset.corrige pour en distinguer d'autres plus tard
+        state.view = "corrige-reception";
+        render();
+      });
+    });
+  }
+
+  const CORRIGE_RECEPTION_CONTROLE = [
+    { ref: "OD-1042", desig: "Perceuse-visseuse 18V", commande: "15", recu: "12", detail: "12 colis × PCB 1", ecart: "-3", ecartClass: "neg", badge: "Manquant", badgeClass: "manquant", obs: "Carton n°3 ouvert au déchargement, perceuses manquantes — confirmé par le contrôle visuel." },
+    { ref: "OD-2078", desig: "Coffret de forets acier (32 pièces)", commande: "30", recu: "30", detail: "30 colis × PCB 1", ecart: "0", ecartClass: "zero", badge: "Avarié / colis mouillé", badgeClass: "avarie", obs: "Quantité conforme, mais coin de carton écrasé et tache d'humidité (infiltration probable pendant le transport)." },
+    { ref: "OD-3301", desig: "Niveau à bulle 60 cm", commande: "20", recu: "20", detail: "5 colis × PCB 4", ecart: "0", ecartClass: "zero", badge: "Conforme / RAS", badgeClass: "conforme", obs: "Colis intacts, quantité correcte." },
+    { ref: "OD-4455", desig: "Casque de protection auditive", commande: "25", recu: "0", detail: "0 colis reçu", ecart: "-25", ecartClass: "neg", badge: "Référence non livrée", badgeClass: "manquant", obs: "Aucun carton de cette référence retrouvé sur la palette." },
+    { ref: "OD-5120", desig: "Gants de manutention (paire)", commande: "50", recu: "40", detail: "5 colis × PCB 8 (au lieu de 10 attendu)", ecart: "-10", ecartClass: "neg", badge: "Erreur de conditionnement (PCB)", badgeClass: "manquant", obs: "Nombre de colis correct en apparence (5), mais PCB livré ≠ PCB commandé → piège non visible au simple comptage." },
+    { ref: "OD-6789", desig: "Lampe frontale LED", commande: "0 (non commandé)", recu: "10", detail: "10 colis × PCB 1", ecart: "+10", ecartClass: "pos", badge: "Surplus / excédent (hors commande)", badgeClass: "surplus", obs: "Référence absente du bon de commande CDE-2026-0847, étiquette non habituelle." },
+    { ref: "OD-7001", desig: "Marteau de charpentier", commande: "20", recu: "20", detail: "20 colis × PCB 1", ecart: "0", ecartClass: "zero", badge: "Conforme / RAS", badgeClass: "conforme", obs: "—" },
+    { ref: "OD-7002", desig: "Ruban à mesurer 5 m", commande: "40", recu: "40", detail: "40 colis × PCB 1", ecart: "0", ecartClass: "zero", badge: "Conforme / RAS", badgeClass: "conforme", obs: "—" },
+    { ref: "OD-7003", desig: "Clé à molette 250 mm", commande: "15", recu: "15", detail: "15 colis × PCB 1", ecart: "0", ecartClass: "zero", badge: "Conforme / RAS", badgeClass: "conforme", obs: "—" },
+    { ref: "OD-7004", desig: "Cadenas à combinaison", commande: "30", recu: "30", detail: "6 colis × PCB 5", ecart: "0", ecartClass: "zero", badge: "Conforme / RAS", badgeClass: "conforme", obs: "—" },
+    { ref: "OD-7005", desig: "Rouleau de ruban adhésif d'emballage", commande: "36", recu: "36", detail: "6 colis × PCB 6", ecart: "0", ecartClass: "zero", badge: "Conforme / RAS", badgeClass: "conforme", obs: "—" }
+  ];
+
+  const CORRIGE_RECEPTION_RESERVES = [
+    { ref: "OD-1042", desig: "Perceuse-visseuse 18V", badge: "Manquant", badgeClass: "manquant", text: "Carton n°3 ouvert au déchargement : il manque 3 perceuses-visseuses 18V (réf. OD-1042) sur les 15 commandées, soit 12 unités reçues au lieu de 15.", meta: "21/09/2026, 8h15" },
+    { ref: "OD-2078", desig: "Coffret de forets acier", badge: "Avarié / colis mouillé", badgeClass: "avarie", text: "Plusieurs coffrets de forets acier (réf. OD-2078) présentent un coin de carton écrasé et une tache d'humidité à la base, laissant supposer une exposition à l'eau pendant le transport. Quantité livrée conforme (30 unités), état des colis à vérifier au déballage.", meta: "21/09/2026, 8h20" },
+    { ref: "OD-4455", desig: "Casque de protection auditive", badge: "Référence non livrée", badgeClass: "manquant", text: "Aucun carton de la référence OD-4455 (casques de protection auditive) n'a été retrouvé sur la palette. 25 unités commandées, 0 unité reçue : référence manquante en totalité.", meta: "21/09/2026, 8h25" },
+    { ref: "OD-5120", desig: "Gants de manutention", badge: "Erreur de conditionnement (PCB)", badgeClass: "manquant", text: "5 colis de la référence OD-5120 (gants de manutention) ont été livrés — nombre de colis conforme en apparence. Le PCB indiqué sur les colis est de 8 au lieu de 10 attendu, soit 40 unités reçues au lieu de 50 commandées : il manque réellement 10 paires de gants.", meta: "21/09/2026, 8h30" },
+    { ref: "OD-6789", desig: "Lampe frontale LED", badge: "Surplus / excédent", badgeClass: "surplus", text: "Un carton supplémentaire de la référence OD-6789 (lampes frontales LED, 10 unités) a été livré sans figurer sur le bon de commande CDE-2026-0847. Référence non commandée, à signaler au fournisseur.", meta: "21/09/2026, 8h35" }
+  ];
+
+  function renderCorrigeReception(content){
+    const CONTROLE = CORRIGE_RECEPTION_CONTROLE;
+    const RESERVES = CORRIGE_RECEPTION_RESERVES;
+    const total = CONTROLE.length + RESERVES.length;
+    let step = 0;
+
+    content.innerHTML = `
+      <button class="back-link" id="backBtn">&larr; Retour aux corrigés</button>
+      <div class="menu-intro" style="margin-top:16px;">
+        <h1>Corrigé — Contrôle réception marchandises</h1>
+        <p>Cliquez sur « Ligne suivante » après chaque réponse des élèves pour révéler la ligne correspondante, d'abord dans le bon de contrôle, puis dans les réserves rédigées.</p>
+      </div>
+
+      <div class="corrige-toolbar no-print">
+        <div class="corrige-progress">
+          <span id="corrigeStepLabel">0</span> / ${total}
+          <div class="corrige-progress-track"><div class="corrige-progress-fill" id="corrigeProgressFill"></div></div>
+        </div>
+        <div class="corrige-toolbar-btns">
+          <button class="btn-ghost" id="corrigeResetBtn">Réinitialiser</button>
+          <button class="btn-ghost" id="corrigePrevBtn">&larr; Précédent</button>
+          <button class="btn btn-primary" id="corrigeNextBtn" style="width:auto; margin:0;">Ligne suivante &rarr;</button>
+          <button class="btn-ghost" id="corrigeAllBtn">Tout afficher</button>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:18px;">
+        <h2>Étape 1 — Bon de contrôle (11 références)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Référence</th><th>Désignation</th><th>Qté commandée</th><th>Qté reçue</th><th>Écart</th><th>Type d'anomalie</th><th>Observation</th>
+            </tr>
+          </thead>
+          <tbody id="corrigeControleBody"></tbody>
+        </table>
+      </div>
+
+      <div class="panel" style="margin-top:18px;">
+        <h2>Étape 2 — Réserves rédigées (5 anomalies)</h2>
+        <div class="corrige-cards" id="corrigeReservesBody"></div>
+      </div>
+    `;
+
+    document.getElementById("backBtn").addEventListener("click", () => { state.view = "corriges"; render(); });
+
+    const controleBody = document.getElementById("corrigeControleBody");
+    const reservesBody = document.getElementById("corrigeReservesBody");
+    const stepLabel = document.getElementById("corrigeStepLabel");
+    const progressFill = document.getElementById("corrigeProgressFill");
+    const nextBtn = document.getElementById("corrigeNextBtn");
+    const prevBtn = document.getElementById("corrigePrevBtn");
+    const allBtn = document.getElementById("corrigeAllBtn");
+    const resetBtn = document.getElementById("corrigeResetBtn");
+
+    function renderStep(){
+      const revealedControle = Math.min(step, CONTROLE.length);
+      const revealedReserves = Math.max(0, step - CONTROLE.length);
+
+      controleBody.innerHTML = CONTROLE.slice(0, revealedControle).map((r, i) => `
+        <tr class="${i === revealedControle - 1 ? "corrige-row-current" : ""}">
+          <td><span class="ref-tag">${r.ref}</span></td>
+          <td>${r.desig}</td>
+          <td>${r.commande}</td>
+          <td>${r.recu}<div class="hint">${r.detail}</div></td>
+          <td class="corrige-ecart corrige-ecart-${r.ecartClass}">${r.ecart}</td>
+          <td><span class="corrige-badge corrige-badge-${r.badgeClass}">${r.badge}</span></td>
+          <td class="hint">${r.obs}</td>
+        </tr>
+      `).join("") + (revealedControle < CONTROLE.length ? `<tr><td colspan="7" class="corrige-placeholder">En attente — cliquez sur « Ligne suivante ».</td></tr>` : "");
+
+      reservesBody.innerHTML = RESERVES.slice(0, revealedReserves).map((c, j) => `
+        <div class="corrige-card corrige-card-${c.badgeClass} ${j === revealedReserves - 1 ? "corrige-card-current" : ""}">
+          <div class="corrige-card-top"><span class="ref-tag">${c.ref}</span><span class="corrige-badge corrige-badge-${c.badgeClass}">${c.badge}</span></div>
+          <div class="excel-step-objectif" style="margin-top:6px;">${c.desig}</div>
+          <p style="font-size:13.5px; line-height:1.5; margin:10px 0;">${c.text}</p>
+          <div class="hint" style="font-family:var(--mono);">${c.meta}</div>
+        </div>
+      `).join("") + Array.from({ length: RESERVES.length - revealedReserves }).map(() => `<div class="corrige-card corrige-card-placeholder">En attente</div>`).join("");
+
+      stepLabel.textContent = step;
+      progressFill.style.width = (step / total * 100) + "%";
+      prevBtn.disabled = step === 0;
+      nextBtn.disabled = step === total;
+      allBtn.disabled = step === total;
+    }
+
+    nextBtn.addEventListener("click", () => { if(step < total){ step++; renderStep(); } });
+    prevBtn.addEventListener("click", () => { if(step > 0){ step--; renderStep(); } });
+    allBtn.addEventListener("click", () => { step = total; renderStep(); });
+    resetBtn.addEventListener("click", () => { step = 0; renderStep(); });
+
+    renderStep();
   }
 
   /* ============ RENDER : RÉFÉRENTIEL DES COMPÉTENCES (enseignant uniquement) ============ */
