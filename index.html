@@ -558,6 +558,79 @@
     #floatingCalculatorRoot{ right: 14px; bottom: 14px; }
     .calc-panel{ width: 220px; }
   }
+
+  /* ===== Module chaîne logistique (2de GATL) ===== */
+  .chaine-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:12px; margin-top:14px; }
+  .chaine-card{
+    text-align:left; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:14px; cursor:pointer; display:flex; flex-direction:column; gap:5px; font:inherit; color:inherit;
+    transition: border-color .12s, transform .12s;
+  }
+  .chaine-card:hover{ border-color:var(--orange); transform: translateY(-1px); }
+  .chaine-card.done{ border-left:4px solid var(--green); }
+  .chaine-card-niveau{ font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft); }
+  .chaine-card-titre{ font-family:var(--display); font-size:16px; line-height:1.2; }
+  .chaine-card-sub{ font-size:12.5px; color:var(--ink-soft); }
+  .chaine-card-score{ font-family:var(--mono); font-size:11.5px; color:var(--steel); margin-top:4px; }
+
+  .chaine-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
+
+  .chaine-liste{ display:flex; flex-direction:column; gap:8px; }
+  .chaine-item{
+    display:flex; align-items:center; gap:12px; padding:11px 12px;
+    background:var(--panel); border:2px solid var(--line); border-radius:var(--radius);
+    cursor:pointer; user-select:none; transition: border-color .12s, background .12s, transform .12s;
+  }
+  .chaine-item:hover{ border-color:var(--steel-light); }
+  .chaine-item.selected{ border-color:var(--orange); background:#fff6ef; box-shadow:0 0 0 2px rgba(217,83,15,.15); }
+  .chaine-item.ok{ border-color:var(--green); background:#f2f9f3; }
+  .chaine-item.ko{ border-color:var(--danger); background:#fdf3f2; }
+  .chaine-item.dragging{ opacity:.45; }
+  .chaine-item.drop-target{ border-color:var(--orange); }
+  .chaine-rang{
+    flex:0 0 auto; width:26px; height:26px; border-radius:50%; background:var(--steel); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:12.5px;
+  }
+  .chaine-item.ok .chaine-rang{ background:var(--green); }
+  .chaine-item.ko .chaine-rang{ background:var(--danger); }
+  .chaine-icone{ flex:0 0 auto; font-size:22px; line-height:1; }
+  .chaine-texte{ flex:1 1 auto; font-size:15px; line-height:1.3; }
+  .chaine-fleches{ flex:0 0 auto; display:flex; flex-direction:column; gap:2px; }
+  .chaine-fleche{
+    border:1px solid var(--line); background:#fff; color:var(--ink); cursor:pointer;
+    width:26px; height:19px; line-height:1; font-size:10px; border-radius:2px; padding:0;
+  }
+  .chaine-fleche:hover:not(:disabled){ background:var(--yellow); border-color:var(--ink); }
+  .chaine-fleche:disabled{ opacity:.3; cursor:default; }
+
+  .chaine-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+  .chaine-actions .btn, .chaine-actions .btn-ghost{ flex:1 1 180px; }
+
+  .chaine-feedback{
+    margin-top:14px; padding:12px 14px; border-left:4px solid var(--yellow);
+    background:#fffaf0; font-size:14px; line-height:1.45;
+  }
+  .chaine-feedback strong{ display:block; margin-bottom:3px; }
+
+  .chaine-reussi{ text-align:center; padding:18px 14px; border:2px solid var(--green); background:#f2f9f3; border-radius:var(--radius); }
+  .chaine-reussi-titre{ font-family:var(--display); font-size:22px; color:var(--green); }
+  .chaine-reussi p{ margin:6px 0 0; font-size:14px; color:var(--ink-soft); }
+
+  .chaine-recap{ display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+  .chaine-recap-item{ display:flex; align-items:flex-start; gap:12px; padding:10px 12px; background:#fdfcfa; border:1px solid var(--line); border-radius:var(--radius); }
+  .chaine-recap-item .chaine-rang{ margin-top:1px; }
+  .chaine-recap-expl{ display:block; font-size:13px; color:var(--ink-soft); margin-top:3px; line-height:1.4; }
+
+  .chaine-cell-ok{ background:#f2f9f3; font-family:var(--mono); font-size:12px; text-align:center; }
+  .chaine-cell-partiel{ background:#fffaf0; font-family:var(--mono); font-size:12px; text-align:center; }
+  .chaine-cell-vide{ color:var(--ink-soft); text-align:center; }
+  .chaine-cell-temps{ font-size:10.5px; color:var(--ink-soft); }
+
+  @media (max-width: 640px){
+    .chaine-texte{ font-size:14px; }
+    .chaine-icone{ font-size:19px; }
+    .chaine-actions .btn, .chaine-actions .btn-ghost{ flex:1 1 100%; }
+  }
 </style>
 </head>
 <body>
@@ -691,7 +764,8 @@
     { id: "francais", code: "ENT-3", title: "Français", desc: "Accords, conjugaison, homophones — 3 quiz de 20 questions.", ready: true, category: "entrainement" },
     { id: "caces", code: "ENT-4", title: "CACES 1-3-5", desc: "Réglementation R489, catégories, stabilité et sécurité — 1 quiz de 20 questions.", ready: true, category: "entrainement" },
     { id: "transportAgenda", code: "T-1", title: "Agenda", desc: "Créneaux, temps fixe/variable, disponibilités personnel et transporteurs.", ready: true, category: "transport" },
-    { id: "transportFlotte", code: "T-2", title: "Flotte", desc: "Fiches véhicules : immatriculation, PTAC, charge utile, volume, statut.", ready: true, category: "transport" }
+    { id: "transportFlotte", code: "T-2", title: "Flotte", desc: "Fiches véhicules : immatriculation, PTAC, charge utile, volume, statut.", ready: true, category: "transport" },
+    { id: "chaine", code: "2DE-1", title: "La chaîne logistique", desc: "Remettre dans l'ordre les étapes d'une chaîne, du fournisseur au client. 4 scénarios.", ready: true, category: "seconde" }
   ];
 
 /* ===== Utilitaires ===== */
@@ -2261,6 +2335,16 @@ const CALCUL_TEMPLATES = {
     leaderboardEntries: { groupe: [], global: [] },
     leaderboardTab: "groupe",
     leaderboardQuizId: null,
+    chaineView: "list",          // list | play | result | classement
+    activeChaineId: null,
+    chaineOrder: [],
+    chaineMarks: null,
+    chaineSelected: null,
+    chaineAttempts: 0,
+    chaineStartTime: null,
+    chaineFinalScore: 0,
+    chaineScores: {},
+    chaineAllScores: {},
     transportView: "agenda",      // agenda | nouveau | referentiels
     transportRefTab: "transporteurs", // transporteurs | personnel | types
     transportDate: null,          // "YYYY-MM-DD", initialisé au chargement du module
@@ -4428,6 +4512,7 @@ const CALCUL_TEMPLATES = {
     const etudeDeCasTiles = MODULES.filter(m => m.category === "etude-de-cas").map(tileHTML).join("");
     const entrainementTiles = MODULES.filter(m => m.category === "entrainement").map(tileHTML).join("");
     const transportTiles = MODULES.filter(m => m.category === "transport").map(tileHTML).join("");
+    const secondeTiles = MODULES.filter(m => m.category === "seconde").map(tileHTML).join("");
 
     const adminTile = state.currentUser.role === "enseignant" ? `
       <div class="admin-tile-row">
@@ -4504,6 +4589,9 @@ const CALCUL_TEMPLATES = {
 
       <div class="section-heading"><span>Transport</span></div>
       <div class="module-grid">${transportTiles}</div>
+
+      <div class="section-heading"><span>Seconde GATL</span></div>
+      <div class="module-grid">${secondeTiles}</div>
 
       <footer class="site-footer">Lycée professionnel Gaston Darboux — 7 rue Jules Raimu, Nîmes · Bac Pro Métiers de la Logistique</footer>
     `;
@@ -4678,6 +4766,15 @@ const CALCUL_TEMPLATES = {
         await loadAllEntrainementScores();
       } else {
         await loadEntrainementScores();
+      }
+    }
+    if(moduleId === "chaine"){
+      state.chaineView = "list";
+      state.activeChaineId = null;
+      state.chaineMarks = null;
+      await loadChaineScores();
+      if(state.currentUser.role === "enseignant"){
+        await loadAllChaineScores();
       }
     }
     if(moduleId === "livret"){
@@ -5295,6 +5392,7 @@ const CALCUL_TEMPLATES = {
     else if(state.activeModule === "geo") renderModuleEntrainement(content, "geo");
     else if(state.activeModule === "francais") renderModuleEntrainement(content, "francais");
     else if(state.activeModule === "caces") renderModuleEntrainement(content, "caces");
+    else if(state.activeModule === "chaine") renderModuleChaine(content);
   }
 
   /* ============ RENDER : MODULE MAGASIN ============ */
@@ -8038,6 +8136,487 @@ const CALCUL_TEMPLATES = {
       state.entrainementView = "list";
       render();
     });
+  }
+
+  /* ============ MODULE CHAÎNE LOGISTIQUE (2de GATL) ============ */
+  // Activité de découverte : remettre dans l'ordre les étapes d'une chaîne logistique.
+  // Peu de lecture, correction immédiate, score enregistré par groupe.
+  const CHAINES = [
+    {
+      id: "baskets",
+      titre: "Une paire de baskets",
+      sousTitre: "De l'usine au client, le parcours classique d'un produit.",
+      niveau: "Découverte",
+      etapes: [
+        { icone: "🏭", texte: "Le fournisseur fabrique les baskets", expl: "Tout commence chez le fournisseur : c'est lui qui produit la marchandise." },
+        { icone: "📝", texte: "L'entreprise passe commande au fournisseur", expl: "Le service achats commande les quantités nécessaires : c'est la commande fournisseur." },
+        { icone: "🚛", texte: "Le camion apporte la marchandise à l'entrepôt", expl: "C'est le transport amont : il relie le fournisseur à l'entrepôt." },
+        { icone: "📋", texte: "On contrôle la livraison à la réception", expl: "On compare la marchandise reçue au bon de livraison : quantités, références, état des colis." },
+        { icone: "📦", texte: "On range la marchandise à son emplacement", expl: "C'est la mise en stock : chaque produit a une adresse précise dans l'entrepôt." },
+        { icone: "🛒", texte: "Le préparateur prélève les articles commandés", expl: "C'est la préparation de commande, ou picking : on va chercher les articles dans les rayonnages." },
+        { icone: "🚚", texte: "On charge le camion à l'expédition", expl: "L'expédition prépare et charge les colis qui partent chez le client." },
+        { icone: "🏠", texte: "Le client reçoit sa commande", expl: "C'est le transport aval, la dernière étape : la livraison au client final." }
+      ]
+    },
+    {
+      id: "ecommerce",
+      titre: "Un colis commandé sur internet",
+      sousTitre: "Ce qui se passe entre le clic et la sonnette.",
+      niveau: "Découverte",
+      etapes: [
+        { icone: "💻", texte: "Le client commande sur le site internet", expl: "La commande client arrive directement dans le système informatique de l'entrepôt." },
+        { icone: "🖨️", texte: "La commande s'affiche chez le préparateur", expl: "Le préparateur reçoit sa liste à prélever sur un terminal ou sur papier." },
+        { icone: "🛒", texte: "Le préparateur va chercher l'article dans le rayonnage", expl: "Le prélèvement : on suit un chemin optimisé pour perdre le moins de temps possible." },
+        { icone: "📦", texte: "L'article est emballé dans un carton", expl: "L'emballage protège le produit pendant le transport. On parle de colisage." },
+        { icone: "🏷️", texte: "L'étiquette de transport est collée sur le colis", expl: "L'étiquette porte l'adresse et un code-barres qui suivra le colis partout." },
+        { icone: "🔀", texte: "Le colis est trié par destination", expl: "Sur la plateforme de tri, les colis sont regroupés par secteur de livraison." },
+        { icone: "🚐", texte: "Le colis part en tournée de livraison", expl: "Le livreur charge sa tournée : plusieurs dizaines de colis dans un ordre précis." },
+        { icone: "✍️", texte: "Le client signe la preuve de livraison", expl: "La signature prouve que le colis a bien été remis : c'est la preuve de livraison." }
+      ]
+    },
+    {
+      id: "yaourts",
+      titre: "Des yaourts jusqu'au supermarché",
+      sousTitre: "Une chaîne du froid : le produit ne doit jamais se réchauffer.",
+      niveau: "Intermédiaire",
+      etapes: [
+        { icone: "🥛", texte: "La laiterie fabrique les yaourts", expl: "La production est la première étape. Les yaourts sortent déjà réfrigérés." },
+        { icone: "🧊", texte: "Les palettes sont filmées et étiquetées", expl: "Le film maintient les colis ; l'étiquette indique la référence et la DLC." },
+        { icone: "❄️", texte: "Chargement dans un camion frigorifique", expl: "Le camion frigorifique maintient la température : c'est le début de la chaîne du froid." },
+        { icone: "🌡️", texte: "À la réception, on contrôle la température", expl: "Si la température est trop haute, la marchandise est refusée. Contrôle obligatoire." },
+        { icone: "🏬", texte: "Stockage en chambre froide", expl: "Les produits frais ne vont jamais dans l'entrepôt classique, mais en chambre froide." },
+        { icone: "📅", texte: "Préparation de la commande en respectant les dates", expl: "On sort d'abord les produits dont la date est la plus proche : c'est le FEFO." },
+        { icone: "🚚", texte: "Expédition vers le supermarché", expl: "Le camion frigorifique repart, toujours à température contrôlée." },
+        { icone: "🧺", texte: "Mise en rayon dans le magasin", expl: "Dernière étape : le produit arrive dans le rayon frais, prêt pour le client." }
+      ]
+    },
+    {
+      id: "retour",
+      titre: "Un retour client",
+      sousTitre: "La logistique inverse : le produit remonte la chaîne.",
+      niveau: "Intermédiaire",
+      etapes: [
+        { icone: "😕", texte: "Le client demande à retourner son article", expl: "Le retour démarre toujours par une demande du client : mauvaise taille, article défectueux…" },
+        { icone: "🏷️", texte: "Une étiquette de retour lui est envoyée", expl: "L'entreprise fournit l'étiquette prépayée : sans elle, le colis ne peut pas être suivi." },
+        { icone: "🏪", texte: "Le client dépose le colis en point relais", expl: "Le point relais regroupe les retours avant leur enlèvement." },
+        { icone: "🚛", texte: "Le colis revient à l'entrepôt", expl: "Le transport retour ramène la marchandise là où elle est repartie." },
+        { icone: "🔍", texte: "On contrôle l'état du produit", expl: "Le produit est-il neuf, abîmé, incomplet ? Ce contrôle décide de la suite." },
+        { icone: "⚖️", texte: "On décide : remise en stock ou rebut", expl: "Un produit intact retourne en stock ; un produit abîmé part en rebut ou en recyclage." },
+        { icone: "💶", texte: "Le client est remboursé", expl: "Le remboursement n'intervient qu'après le contrôle du produit retourné." },
+        { icone: "🖥️", texte: "Le stock est mis à jour dans le système", expl: "Sans mise à jour informatique, le stock réel et le stock théorique ne correspondent plus." }
+      ]
+    }
+  ];
+
+  function getChaineById(id){ return CHAINES.find(c => c.id === id) || null; }
+
+  async function loadChaineScores(){
+    try{
+      const snap = await dbRefGroupe(`chaineScores/${state.currentUser.matricule}`).get();
+      state.chaineScores = snap.val() || {};
+    }catch(e){ state.chaineScores = {}; }
+  }
+
+  async function loadAllChaineScores(){
+    try{
+      const snap = await dbRefGroupe("chaineScores").get();
+      state.chaineAllScores = snap.val() || {};
+    }catch(e){ state.chaineAllScores = {}; }
+  }
+
+  async function saveChaineScore(chaineId, score, total, essais){
+    const tempsSecondes = state.chaineStartTime ? Math.round((Date.now() - state.chaineStartTime) / 1000) : null;
+    const ancien = state.chaineScores[chaineId];
+    // On ne conserve que la meilleure performance : score d'abord, puis temps.
+    if(ancien && (ancien.score > score || (ancien.score === score && (ancien.tempsSecondes ?? Infinity) <= (tempsSecondes ?? Infinity)))){
+      return;
+    }
+    const record = { score, total, essais, tempsSecondes, date: Date.now() };
+    state.chaineScores[chaineId] = record;
+    try{
+      await dbRefGroupe(`chaineScores/${state.currentUser.matricule}`).update({ [chaineId]: record });
+    }catch(e){ showToast("Échec de l'enregistrement du score."); }
+  }
+
+  function startChaine(chaineId){
+    const chaine = getChaineById(chaineId);
+    if(!chaine) return;
+    const indices = chaine.etapes.map((_, i) => i);
+    // On mélange jusqu'à obtenir un ordre différent de la solution (sinon l'exercice est déjà résolu).
+    let essaisMelange = 0;
+    do {
+      shuffleInPlace(indices);
+      essaisMelange++;
+    } while(essaisMelange < 20 && indices.every((v, i) => v === i));
+    state.activeChaineId = chaineId;
+    state.chaineOrder = indices;
+    state.chaineMarks = null;
+    state.chaineSelected = null;
+    state.chaineAttempts = 0;
+    state.chaineStartTime = Date.now();
+    state.chaineView = "play";
+    render();
+  }
+
+  function renderModuleChaine(content){
+    if(state.chaineView === "play") renderChainePlay(content);
+    else if(state.chaineView === "result") renderChaineResult(content);
+    else if(state.chaineView === "classement") renderChaineClassement(content);
+    else renderChaineList(content);
+  }
+
+  function chaineBackBar(){
+    return `
+      <button class="back-link" id="backBtn">&larr; Retour au menu</button>
+      ${state.currentUser.role === "enseignant" ? `<button class="back-link" id="changeGroupeBtn" style="margin-left:16px;">Changer de groupe (${state.activeGroupe})</button>` : ""}
+    `;
+  }
+
+  function wireChaineBackBar(){
+    const b = document.getElementById("backBtn");
+    if(b) b.addEventListener("click", () => { state.view = "menu"; render(); });
+    const g = document.getElementById("changeGroupeBtn");
+    if(g) g.addEventListener("click", () => {
+      state.pendingModule = "chaine";
+      state.view = "groupe-select";
+      render();
+    });
+  }
+
+  function renderChaineList(content){
+    const isTeacher = state.currentUser.role === "enseignant";
+
+    const cartes = CHAINES.map(c => {
+      const rec = state.chaineScores[c.id];
+      const done = rec && rec.score === rec.total;
+      return `
+        <button class="chaine-card ${done ? "done" : ""}" data-chaine="${c.id}">
+          <span class="chaine-card-niveau">${c.niveau}</span>
+          <span class="chaine-card-titre">${c.titre}</span>
+          <span class="chaine-card-sub">${c.sousTitre}</span>
+          <span class="chaine-card-score">
+            ${rec
+              ? `${done ? "✅ Réussi" : `Meilleur score : ${rec.score}/${rec.total}`} · ${formatTemps(rec.tempsSecondes)}`
+              : "Pas encore commencé"}
+          </span>
+        </button>
+      `;
+    }).join("");
+
+    let suiviHTML = "";
+    if(isTeacher){
+      const eleves = state.users.filter(u => u.role === "eleve" && u.groupe === state.activeGroupe);
+      if(eleves.length === 0){
+        suiviHTML = `<div class="panel" style="margin-top:18px;"><h2>Suivi de la classe</h2><div class="empty-state">Aucun élève dans ce groupe.</div></div>`;
+      } else {
+        const lignes = eleves.map(u => {
+          const rec = state.chaineAllScores[u.matricule] || {};
+          const cells = CHAINES.map(c => {
+            const r = rec[c.id];
+            if(!r) return `<td class="chaine-cell-vide">—</td>`;
+            const ok = r.score === r.total;
+            return `<td class="${ok ? "chaine-cell-ok" : "chaine-cell-partiel"}">${r.score}/${r.total}<br><span class="chaine-cell-temps">${formatTemps(r.tempsSecondes)}</span></td>`;
+          }).join("");
+          return `<tr><td>${u.nom}</td>${cells}</tr>`;
+        }).join("");
+        suiviHTML = `
+          <div class="panel" style="margin-top:18px;">
+            <h2>Suivi de la classe — groupe ${state.activeGroupe}</h2>
+            <p class="hint" style="margin-bottom:12px;">Meilleur score de chaque élève par scénario, avec le temps réalisé.</p>
+            <table>
+              <thead><tr><th>Élève</th>${CHAINES.map(c => `<th>${c.titre}</th>`).join("")}</tr></thead>
+              <tbody>${lignes}</tbody>
+            </table>
+          </div>
+        `;
+      }
+    }
+
+    content.innerHTML = `
+      ${chaineBackBar()}
+      <div class="panel" style="margin-top:14px;">
+        <h2>La chaîne logistique</h2>
+        <p class="hint">
+          Chaque scénario présente huit étapes, mélangées. Remettez-les dans le bon ordre,
+          de la première à la dernière, puis vérifiez. Vous pouvez recommencer autant de fois que nécessaire.
+        </p>
+        <div class="chaine-grid">${cartes}</div>
+        <button class="btn-ghost" id="chaineClassementBtn" style="width:100%; margin-top:14px;">🏆 Voir le classement du groupe</button>
+      </div>
+      ${suiviHTML}
+    `;
+
+    wireChaineBackBar();
+    content.querySelectorAll("[data-chaine]").forEach(btn => {
+      btn.addEventListener("click", () => startChaine(btn.dataset.chaine));
+    });
+    document.getElementById("chaineClassementBtn").addEventListener("click", async () => {
+      showToast("Chargement du classement…");
+      await loadAllChaineScores();
+      state.chaineView = "classement";
+      render();
+    });
+  }
+
+  function renderChainePlay(content){
+    const chaine = getChaineById(state.activeChaineId);
+    if(!chaine){ state.chaineView = "list"; render(); return; }
+
+    content.innerHTML = `
+      ${chaineBackBar()}
+      <div class="panel" style="margin-top:14px;">
+        <div class="chaine-head">
+          <div>
+            <h2 style="margin-bottom:2px;">${chaine.titre}</h2>
+            <p class="hint" style="margin:0;">${chaine.sousTitre}</p>
+          </div>
+          <button class="btn-ghost" id="chaineQuitBtn">Changer de scénario</button>
+        </div>
+        <div class="info-box" style="margin:12px 0 16px;">
+          <strong>Comment faire :</strong> cliquez sur une étape pour la sélectionner, puis cliquez à l'endroit
+          où elle doit aller. Vous pouvez aussi utiliser les flèches ▲ ▼, ou faire glisser les cartes à la souris.
+        </div>
+        <div id="chaineListe" class="chaine-liste"></div>
+        <div id="chaineFeedback"></div>
+        <div class="chaine-actions">
+          <button class="btn btn-primary" id="chaineCheckBtn">Vérifier ma chaîne</button>
+          <button class="btn-ghost" id="chaineShuffleBtn">Tout remélanger</button>
+        </div>
+      </div>
+    `;
+
+    wireChaineBackBar();
+    document.getElementById("chaineQuitBtn").addEventListener("click", () => {
+      state.chaineView = "list";
+      render();
+    });
+    document.getElementById("chaineShuffleBtn").addEventListener("click", () => startChaine(chaine.id));
+    document.getElementById("chaineCheckBtn").addEventListener("click", verifierChaine);
+
+    const liste = document.getElementById("chaineListe");
+    const feedback = document.getElementById("chaineFeedback");
+
+    function peindre(){
+      liste.innerHTML = state.chaineOrder.map((etapeIdx, pos) => {
+        const e = chaine.etapes[etapeIdx];
+        const mark = state.chaineMarks ? state.chaineMarks[pos] : null;
+        const cls = [
+          "chaine-item",
+          state.chaineSelected === pos ? "selected" : "",
+          mark === true ? "ok" : "",
+          mark === false ? "ko" : ""
+        ].filter(Boolean).join(" ");
+        return `
+          <div class="${cls}" data-pos="${pos}" draggable="true">
+            <span class="chaine-rang">${pos + 1}</span>
+            <span class="chaine-icone" aria-hidden="true">${e.icone}</span>
+            <span class="chaine-texte">${e.texte}</span>
+            <span class="chaine-fleches">
+              <button class="chaine-fleche" data-move="up" data-pos="${pos}" ${pos === 0 ? "disabled" : ""} title="Monter">▲</button>
+              <button class="chaine-fleche" data-move="down" data-pos="${pos}" ${pos === state.chaineOrder.length - 1 ? "disabled" : ""} title="Descendre">▼</button>
+            </span>
+          </div>
+        `;
+      }).join("");
+      brancher();
+    }
+
+    function deplacer(from, to){
+      if(from === to || from == null || to == null) return;
+      const arr = state.chaineOrder.slice();
+      const [carte] = arr.splice(from, 1);
+      arr.splice(to, 0, carte);
+      state.chaineOrder = arr;
+      state.chaineSelected = null;
+      state.chaineMarks = null;
+      feedback.innerHTML = "";
+      peindre();
+    }
+
+    function permuter(a, b){
+      const arr = state.chaineOrder.slice();
+      [arr[a], arr[b]] = [arr[b], arr[a]];
+      state.chaineOrder = arr;
+      state.chaineSelected = null;
+      state.chaineMarks = null;
+      feedback.innerHTML = "";
+      peindre();
+    }
+
+    function brancher(){
+      liste.querySelectorAll(".chaine-fleche").forEach(btn => {
+        btn.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          const pos = Number(btn.dataset.pos);
+          permuter(pos, btn.dataset.move === "up" ? pos - 1 : pos + 1);
+        });
+      });
+
+      liste.querySelectorAll(".chaine-item").forEach(item => {
+        const pos = Number(item.dataset.pos);
+
+        item.addEventListener("click", () => {
+          if(state.chaineSelected === null){
+            state.chaineSelected = pos;
+            peindre();
+          } else if(state.chaineSelected === pos){
+            state.chaineSelected = null;
+            peindre();
+          } else {
+            deplacer(state.chaineSelected, pos);
+          }
+        });
+
+        item.addEventListener("dragstart", (ev) => {
+          ev.dataTransfer.setData("text/plain", String(pos));
+          ev.dataTransfer.effectAllowed = "move";
+          item.classList.add("dragging");
+        });
+        item.addEventListener("dragend", () => item.classList.remove("dragging"));
+        item.addEventListener("dragover", (ev) => {
+          ev.preventDefault();
+          ev.dataTransfer.dropEffect = "move";
+          item.classList.add("drop-target");
+        });
+        item.addEventListener("dragleave", () => item.classList.remove("drop-target"));
+        item.addEventListener("drop", (ev) => {
+          ev.preventDefault();
+          item.classList.remove("drop-target");
+          const from = Number(ev.dataTransfer.getData("text/plain"));
+          deplacer(from, pos);
+        });
+      });
+    }
+
+    async function verifierChaine(){
+      const total = chaine.etapes.length;
+      const marks = state.chaineOrder.map((etapeIdx, pos) => etapeIdx === pos);
+      const score = marks.filter(Boolean).length;
+      state.chaineMarks = marks;
+      state.chaineSelected = null;
+      state.chaineAttempts++;
+      peindre();
+
+      await saveChaineScore(chaine.id, score, total, state.chaineAttempts);
+
+      if(score === total){
+        state.chaineFinalScore = score;
+        state.chaineView = "result";
+        render();
+        return;
+      }
+
+      const manquants = total - score;
+      feedback.innerHTML = `
+        <div class="chaine-feedback">
+          <strong>${score} étape${score > 1 ? "s" : ""} sur ${total} à la bonne place.</strong>
+          Il reste ${manquants} carte${manquants > 1 ? "s" : ""} à déplacer.
+          Les cartes en vert sont bien placées : ne les bougez plus.
+        </div>
+      `;
+    }
+
+    peindre();
+  }
+
+  function renderChaineResult(content){
+    const chaine = getChaineById(state.activeChaineId);
+    if(!chaine){ state.chaineView = "list"; render(); return; }
+    const rec = state.chaineScores[chaine.id] || {};
+    const essais = state.chaineAttempts;
+
+    const recap = chaine.etapes.map((e, i) => `
+      <div class="chaine-recap-item">
+        <span class="chaine-rang">${i + 1}</span>
+        <span class="chaine-icone" aria-hidden="true">${e.icone}</span>
+        <span>
+          <strong>${e.texte}</strong>
+          <span class="chaine-recap-expl">${e.expl}</span>
+        </span>
+      </div>
+    `).join("");
+
+    content.innerHTML = `
+      ${chaineBackBar()}
+      <div class="panel" style="margin-top:14px;">
+        <div class="chaine-reussi">
+          <div class="chaine-reussi-titre">Chaîne reconstituée !</div>
+          <p>
+            ${chaine.titre} — ${chaine.etapes.length}/${chaine.etapes.length} étapes,
+            en ${essais} essai${essais > 1 ? "s" : ""}${rec.tempsSecondes != null ? ` et ${formatTemps(rec.tempsSecondes)}` : ""}.
+          </p>
+        </div>
+        <h2 style="margin-top:20px;">Ce qu'il faut retenir</h2>
+        <p class="hint">L'ordre correct, avec le rôle de chaque étape.</p>
+        <div class="chaine-recap">${recap}</div>
+        <div class="chaine-actions">
+          <button class="btn btn-primary" id="chaineNextBtn">Choisir un autre scénario</button>
+          <button class="btn-ghost" id="chaineRetryBtn">Refaire celui-ci</button>
+          <button class="btn-ghost" id="chaineClassementBtn2">🏆 Classement</button>
+        </div>
+      </div>
+    `;
+
+    wireChaineBackBar();
+    document.getElementById("chaineNextBtn").addEventListener("click", () => { state.chaineView = "list"; render(); });
+    document.getElementById("chaineRetryBtn").addEventListener("click", () => startChaine(chaine.id));
+    document.getElementById("chaineClassementBtn2").addEventListener("click", async () => {
+      showToast("Chargement du classement…");
+      await loadAllChaineScores();
+      state.chaineView = "classement";
+      render();
+    });
+  }
+
+  function renderChaineClassement(content){
+    const eleves = state.users.filter(u => u.role === "eleve" && u.groupe === state.activeGroupe);
+    const entries = eleves.map(u => {
+      const rec = state.chaineAllScores[u.matricule] || {};
+      let reussis = 0, tempsTotal = 0, scoreTotal = 0;
+      CHAINES.forEach(c => {
+        const r = rec[c.id];
+        if(!r) return;
+        scoreTotal += r.score;
+        if(r.score === r.total){ reussis++; tempsTotal += (r.tempsSecondes || 0); }
+      });
+      return { nom: u.nom, reussis, tempsTotal, scoreTotal };
+    }).filter(e => e.scoreTotal > 0);
+
+    entries.sort((a, b) => {
+      if(b.reussis !== a.reussis) return b.reussis - a.reussis;
+      if(b.scoreTotal !== a.scoreTotal) return b.scoreTotal - a.scoreTotal;
+      return a.tempsTotal - b.tempsTotal;
+    });
+
+    const medaille = (i) => i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : (i + 1);
+
+    content.innerHTML = `
+      ${chaineBackBar()}
+      <div class="panel" style="margin-top:14px;">
+        <h2>Classement — groupe ${state.activeGroupe}</h2>
+        <p class="hint">Classés par nombre de scénarios réussis, puis par total de points, puis par temps cumulé.</p>
+        ${entries.length === 0
+          ? `<div class="empty-state">Personne n'a encore terminé de scénario dans ce groupe.</div>`
+          : `<table>
+              <thead><tr><th></th><th>Élève</th><th>Scénarios réussis</th><th>Points</th><th>Temps cumulé</th></tr></thead>
+              <tbody>
+                ${entries.map((e, i) => `
+                  <tr>
+                    <td style="font-size:18px;">${medaille(i)}</td>
+                    <td>${e.nom}</td>
+                    <td>${e.reussis} / ${CHAINES.length}</td>
+                    <td>${e.scoreTotal}</td>
+                    <td>${e.reussis > 0 ? formatTemps(e.tempsTotal) : "—"}</td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>`}
+        <button class="btn-ghost" id="chaineBackListBtn" style="width:100%; margin-top:14px;">Retour aux scénarios</button>
+      </div>
+    `;
+
+    wireChaineBackBar();
+    document.getElementById("chaineBackListBtn").addEventListener("click", () => { state.chaineView = "list"; render(); });
   }
 
   /* ============ RENDER : MODULE BRASSERIE (étude de cas) ============ */
