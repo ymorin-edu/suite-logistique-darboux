@@ -685,6 +685,7 @@
     { id: "yvesrocher", code: "EC-2", title: "Étude de cas — Yves Rocher", desc: "Contrôle des stocks — exercice complet noté.", ready: true, category: "etude-de-cas" },
     { id: "receptionplateforme", code: "EC-3", title: "Étude de cas — Réception plateforme logistique", desc: "Gérer la réception de marchandise sur une plateforme logistique — exercice complet noté.", ready: true, category: "etude-de-cas" },
     { id: "footlocker", code: "EC-4", title: "Étude de cas — Foot Locker", desc: "Étude de cas logistique — exercice complet noté.", ready: true, category: "etude-de-cas" },
+    { id: "bouygues", code: "EC-5", title: "Étude de cas — Bouygues Telecom", desc: "Étude de cas logistique — exercice complet noté.", ready: true, category: "etude-de-cas" },
     { id: "calcul", code: "ENT-1", title: "Calcul", desc: "Proportionnalité, conversions, arrondis — 3 quiz de 20 questions.", ready: true, category: "entrainement" },
     { id: "geo", code: "ENT-2", title: "Géo", desc: "Capitales, régions et repères utiles en logistique — 3 quiz de 20 questions.", ready: true, category: "entrainement" },
     { id: "francais", code: "ENT-3", title: "Français", desc: "Accords, conjugaison, homophones — 3 quiz de 20 questions.", ready: true, category: "entrainement" },
@@ -2234,6 +2235,8 @@ const CALCUL_TEMPLATES = {
     receptionPlateformeAllNotes: {},
     footLockerNotes: null,
     footLockerAllNotes: {},
+    bouyguesNotes: null,
+    bouyguesAllNotes: {},
     pole1Notes: {},
     pole1AllNotes: {},
     excelStockNotes: {},
@@ -3936,6 +3939,20 @@ const CALCUL_TEMPLATES = {
     }catch(e){ state.footLockerAllNotes = {}; }
   }
 
+  async function loadBouyguesNotes(){
+    try{
+      const snap = await dbRefGroupe(`bouyguesNotes/${state.currentUser.matricule}`).get();
+      state.bouyguesNotes = snap.val() || null;
+    }catch(e){ state.bouyguesNotes = null; }
+  }
+
+  async function loadAllBouyguesNotes(){
+    try{
+      const snap = await dbRefGroupe("bouyguesNotes").get();
+      state.bouyguesAllNotes = snap.val() || {};
+    }catch(e){ state.bouyguesAllNotes = {}; }
+  }
+
   async function saveBrasserieNote(result){
     const record = { note: result.note, correct: result.correct, total: result.total, date: Date.now() };
     state.brasserieNotes = record;
@@ -4611,6 +4628,13 @@ const CALCUL_TEMPLATES = {
         await loadFootLockerNotes();
       }
     }
+    if(moduleId === "bouygues"){
+      if(state.currentUser.role === "enseignant"){
+        await loadAllBouyguesNotes();
+      } else {
+        await loadBouyguesNotes();
+      }
+    }
     if(moduleId === "excelstock"){
       if(state.currentUser.role === "enseignant"){
         await loadAllExcelStockNotes();
@@ -5261,6 +5285,7 @@ const CALCUL_TEMPLATES = {
     else if(state.activeModule === "yvesrocher") renderModuleYvesRocher(content);
     else if(state.activeModule === "receptionplateforme") renderModuleReceptionPlateforme(content);
     else if(state.activeModule === "footlocker") renderModuleFootLocker(content);
+    else if(state.activeModule === "bouygues") renderModuleBouygues(content);
     else if(state.activeModule === "excelstock") renderModuleExcelStock(content);
     else if(state.activeModule === "calccom") renderModuleCalcCom(content);
     else if(state.activeModule === "capol") renderModuleCapol(content);
@@ -8363,6 +8388,95 @@ const CALCUL_TEMPLATES = {
         state.footLockerAllNotes[matricule] = record;
         try{
           await dbRefGroupeExplicit(state.activeGroupe, `footLockerNotes/${matricule}`).set(record);
+          showToast(`Note enregistrée pour ${btn.dataset.nom}.`);
+        }catch(e){
+          showToast("Échec de l'enregistrement de la note.");
+        }
+      });
+    });
+  }
+
+  /* ============ RENDER : MODULE BOUYGUES TELECOM (étude de cas) ============ */
+  const BOUYGUES_DIGIPAD_URL = "https://digipad.app/p/1892506/268c962733fa98";
+
+  function renderModuleBouygues(content){
+    const isTeacher = state.currentUser.role === "enseignant";
+    const noteRecord = !isTeacher ? state.bouyguesNotes : null;
+
+    let classTrackingHTML = "";
+    if(isTeacher){
+      const students = state.users.filter(u => u.role === "eleve" && u.groupe === state.activeGroupe);
+      classTrackingHTML = `
+        <div class="panel" style="margin-top:18px;">
+          <h2>Suivi de la classe — groupe ${state.activeGroupe}</h2>
+          <p class="hint" style="margin-bottom:12px;">L'activité se fait sur le Digipad, sans correction automatique : saisissez ici la note de chaque élève.</p>
+          ${students.length === 0 ? `<div class="empty-state">Aucun élève dans ce groupe.</div>` : `
+            <table>
+              <thead><tr><th>Élève</th><th>Note /20</th><th></th></tr></thead>
+              <tbody>
+                ${students.map(st => {
+                  const n = state.bouyguesAllNotes[st.matricule];
+                  return `<tr>
+                    <td>${st.nom}</td>
+                    <td style="text-align:center;"><input type="number" min="0" max="20" step="0.5" class="bouygues-note-input" data-matricule="${st.matricule}" value="${n ? n.note : ""}" style="width:70px; text-align:center;" /></td>
+                    <td><button class="btn-ghost bouygues-save-note-btn" data-matricule="${st.matricule}" data-nom="${st.nom}" style="padding:4px 10px; font-size:12px;">Enregistrer</button></td>
+                  </tr>`;
+                }).join("")}
+              </tbody>
+            </table>
+          `}
+        </div>
+      `;
+    }
+
+    content.innerHTML = `
+      <button class="back-link" id="backBtn">&larr; Retour au menu</button>
+      ${isTeacher ? `<button class="back-link" id="changeGroupeBtn" style="margin-left:16px;">Changer de groupe (${state.activeGroupe})</button>` : ""}
+      <div class="menu-intro" style="margin-top:16px;">
+        <h1>Étude de cas — Bouygues Telecom</h1>
+        <p>${isTeacher ? `Saisissez la note de chaque élève ci-dessous.` : "L'activité se fait directement sur le Digipad ci-dessous."}</p>
+      </div>
+      <div class="excel-step ${noteRecord ? "done" : ""}">
+        <div class="excel-step-num">${noteRecord ? "✓" : "📱"}</div>
+        <div class="excel-step-body">
+          <div class="excel-step-title">Scénario complet</div>
+          <div class="excel-step-objectif">Étude de cas logistique dans l'univers Bouygues Telecom.</div>
+          ${noteRecord ? `<div class="excel-note-badge">Note : ${noteRecord.note}/20</div>` : ""}
+        </div>
+        <div class="excel-step-actions">
+          <button class="btn-ghost" id="bouyguesDigipadBtn">Ouvrir le Digipad</button>
+        </div>
+      </div>
+      ${classTrackingHTML}
+    `;
+
+    document.getElementById("backBtn").addEventListener("click", () => { state.view = "menu"; render(); });
+    const changeGroupeBtn = document.getElementById("changeGroupeBtn");
+    if(changeGroupeBtn){
+      changeGroupeBtn.addEventListener("click", () => {
+        state.pendingModule = "bouygues";
+        state.view = "groupe-select";
+        render();
+      });
+    }
+
+    document.getElementById("bouyguesDigipadBtn").addEventListener("click", () => {
+      window.open(BOUYGUES_DIGIPAD_URL, "_blank", "noopener");
+    });
+
+    content.querySelectorAll(".bouygues-save-note-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const matricule = btn.dataset.matricule;
+        const input = content.querySelector(`.bouygues-note-input[data-matricule="${matricule}"]`);
+        const note = parseFloat(input.value);
+        if(isNaN(note) || note < 0 || note > 20){
+          showToast("La note doit être un nombre entre 0 et 20.");
+          return;
+        }
+        const record = { note, date: Date.now() };
+        state.bouyguesAllNotes[matricule] = record;
+        try{
+          await dbRefGroupeExplicit(state.activeGroupe, `bouyguesNotes/${matricule}`).set(record);
           showToast(`Note enregistrée pour ${btn.dataset.nom}.`);
         }catch(e){
           showToast("Échec de l'enregistrement de la note.");
