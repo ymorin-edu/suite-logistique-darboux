@@ -1,1 +1,14 @@
 ----- 29/09/2026 22:12:34,02 -----
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'push_auto.vbs', LF will be replaced by CRLF the next time Git touches it
+index.html
+push.log
+push_auto.vbs
+[main 7fd487b] Mise a jour du site - 2026-09-29 22:12
+ 3 files changed, 587 insertions(+), 1 deletion(-)
+ create mode 100644 push.log
+ create mode 100644 push_auto.vbs
+To https://github.com/ymorin-edu/suite-logistique-darboux.git
+   356ff94..7fd487b  main -> main
+Pousse avec succes.
+----- 29/09/2026 22:13:59,84 -----
