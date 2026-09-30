@@ -195,6 +195,12 @@
     background: var(--orange); border: 2px solid var(--bg);
   }
   .rubrique:hover .rubrique-dot{ border-color: var(--panel); }
+  .rubrique-apart{ padding: 8px 14px 10px; flex: 0 0 auto; }
+  .rubrique-apart .rubrique-disc{ width: 62px; height: 62px; }
+  .rubrique-apart .rubrique-disc svg{ width: 29px; height: 29px; }
+  .rubrique-apart .rubrique-name{ font-size: 13.5px; }
+  .rubrique-apart .rubrique-dot{ top: 6px; left: calc(50% + 16px); }
+  .rubrique-apart .rubrique-count{ color: var(--orange); font-weight: 600; }
   .rubrique.disabled{ opacity: .42; cursor: default; }
   .rubrique.disabled:hover{ background:none; }
   .rubrique.disabled:hover .rubrique-disc{ background: var(--steel); transform:none; }
@@ -843,38 +849,36 @@
     { id: "pole1", code: "C-5", title: "Pôle 1 — Compétences", desc: "Exercices Excel notés par compétence du référentiel (C1.1 à C1.6).", ready: true, category: "cours" },
     { id: "pole2", code: "C-6", title: "Pôle 2 — Compétences", desc: "Exercices Excel notés par compétence du référentiel (C2.1 à C2.6).", ready: true, category: "cours" },
     { id: "pole3", code: "C-7", title: "Pôle 3 — Compétences", desc: "Exercices Excel notés par compétence du référentiel (C3.1 à C3.4).", ready: true, category: "cours" },
-    { id: "brasserie", code: "EC-1", title: "Étude de cas — Brasseries du Gâtinais", desc: "Palettisation, mise en stock et adressage — exercice complet noté.", ready: true, category: "etude-de-cas" },
-    { id: "yvesrocher", code: "EC-2", title: "Étude de cas — Yves Rocher", desc: "Contrôle des stocks — exercice complet noté.", ready: true, category: "etude-de-cas" },
-    { id: "receptionplateforme", code: "EC-3", title: "Étude de cas — Réception plateforme logistique", desc: "Gérer la réception de marchandise sur une plateforme logistique — exercice complet noté.", ready: true, category: "etude-de-cas" },
-    { id: "footlocker", code: "EC-4", title: "Étude de cas — Foot Locker", desc: "Étude de cas logistique — exercice complet noté.", ready: true, category: "etude-de-cas" },
-    { id: "bouygues", code: "EC-5", title: "Étude de cas — Bouygues Telecom", desc: "Étude de cas logistique — exercice complet noté.", ready: true, category: "etude-de-cas" },
+    { id: "brasserie", code: "EC-1", title: "Scénario — Brasseries du Gâtinais", desc: "Palettisation, mise en stock et adressage — exercice complet noté.", ready: true, category: "etude-de-cas" },
+    { id: "yvesrocher", code: "EC-2", title: "Scénario — Yves Rocher", desc: "Contrôle des stocks — exercice complet noté.", ready: true, category: "etude-de-cas" },
+    { id: "receptionplateforme", code: "EC-3", title: "Scénario — Réception plateforme logistique", desc: "Gérer la réception de marchandise sur une plateforme logistique — exercice complet noté.", ready: true, category: "etude-de-cas" },
+    { id: "footlocker", code: "EC-4", title: "Scénario — Foot Locker", desc: "Scénario logistique — exercice complet noté.", ready: true, category: "etude-de-cas" },
+    { id: "bouygues", code: "EC-5", title: "Scénario — Bouygues Telecom", desc: "Scénario logistique — exercice complet noté.", ready: true, category: "etude-de-cas" },
     { id: "calcul", code: "ENT-1", title: "Calcul", desc: "Proportionnalité, conversions, arrondis — 3 quiz de 20 questions.", ready: true, category: "entrainement" },
     { id: "geo", code: "ENT-2", title: "Géo", desc: "Capitales, régions et repères utiles en logistique — 3 quiz de 20 questions.", ready: true, category: "entrainement" },
     { id: "francais", code: "ENT-3", title: "Français", desc: "Accords, conjugaison, homophones — 3 quiz de 20 questions.", ready: true, category: "entrainement" },
     { id: "caces", code: "ENT-4", title: "CACES 1-3-5", desc: "Réglementation R489, catégories, stabilité et sécurité — 1 quiz de 20 questions.", ready: true, category: "entrainement" },
     { id: "transportAgenda", code: "T-1", title: "Agenda", desc: "Créneaux, temps fixe/variable, disponibilités personnel et transporteurs.", ready: true, category: "transport" },
     { id: "transportFlotte", code: "T-2", title: "Flotte", desc: "Fiches véhicules : immatriculation, PTAC, charge utile, volume, statut.", ready: true, category: "transport" },
-    { id: "chaine", code: "2DE-1", title: "La chaîne logistique", desc: "Remettre dans l'ordre les étapes d'une chaîne, du fournisseur au client. 4 scénarios.", ready: true, category: "seconde" }
+    { id: "chaine", code: "2DE-1", title: "La chaîne logistique", desc: "Remettre dans l'ordre les étapes d'une chaîne, du fournisseur au client. 4 scénarios.", ready: true, category: "operations" }
   ];
 
   /* ============ RUBRIQUES : les pastilles de la page d'accueil ============ */
   const RUBRIQUES = [
     { id: "magasin",      label: "Magasin",       ids: ["magasin"],
       desc: "La base du magasin pédagogique : produits, emplacements, fournisseurs et état du stock." },
-    { id: "messagerie",   label: "Messagerie",    ids: ["messagerie"],
+    { id: "messagerie",   label: "Messagerie",    ids: ["messagerie"], apart: true,
       desc: "Écrire à l'enseignant et suivre les réponses." },
-    { id: "activite",     label: "Activité",      ids: ["picking", "reception"],
-      desc: "Les deux opérations du quai : préparer une commande, contrôler une réception." },
-    { id: "cours",        label: "Cours",         cat: "cours",
+    { id: "activite",     label: "Logistique",    ids: ["chaine", "picking", "reception"],
+      desc: "La chaîne logistique de bout en bout, puis les deux opérations du quai : préparer une commande, contrôler une réception." },
+    { id: "cours",        label: "Tableur",       cat: "cours",
       desc: "Les progressions Excel, du premier tableau aux compétences du référentiel." },
-    { id: "etude-de-cas", label: "Études de cas", cat: "etude-de-cas",
+    { id: "etude-de-cas", label: "Scénario",      cat: "etude-de-cas",
       desc: "Des situations d'entreprise complètes, à traiter du début à la fin. Exercices notés." },
-    { id: "entrainement", label: "Entraînement",  cat: "entrainement",
-      desc: "Quiz courts pour réviser : calcul, géographie, français, CACES." },
+    { id: "entrainement", label: "Quiz",          cat: "entrainement",
+      desc: "Séries de questions courtes pour réviser : calcul, géographie, français, CACES." },
     { id: "transport",    label: "Transport",     cat: "transport",
-      desc: "Agenda des créneaux de quai et fiches véhicules de la flotte." },
-    { id: "seconde",      label: "Seconde GATL",  cat: "seconde",
-      desc: "Activités de découverte pour les classes de seconde." }
+      desc: "Agenda des créneaux de quai et fiches véhicules de la flotte." }
   ];
 
   const RUBRIQUE_ICONS = {
@@ -885,7 +889,6 @@
     "etude-de-cas": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter" aria-hidden="true"><path d="M3 6h6l2 2h10v11H3z"/><circle cx="14" cy="14" r="3"/><path d="M16.3 16.3L19 19"/></svg>`,
     "entrainement": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l3 2M9.5 2h5M12 2v3"/></svg>`,
     "transport": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter" aria-hidden="true"><path d="M2 7h12v10H2z"/><path d="M14 10h4l3 4v3h-7z"/><circle cx="6.5" cy="17.5" r="2.2"/><circle cx="17" cy="17.5" r="2.2"/></svg>`,
-    "seconde": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter" aria-hidden="true"><path d="M3 18h5v-5h5V8h6"/><path d="M16.5 5l3.5 3-3.5 3"/></svg>`,
     "admin": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter" aria-hidden="true"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c.9-4 3.9-6 7.5-6s6.6 2 7.5 6"/></svg>`,
     "referentiel": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter" aria-hidden="true"><rect x="4" y="3" width="16" height="18"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>`,
     "coursdocs": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 12.5h6M9 16.5h6"/></svg>`,
@@ -4651,7 +4654,7 @@ const CALCUL_TEMPLATES = {
 
     if(!rub){
       /* ---------- Accueil : les pastilles de rubrique ---------- */
-      const pastilles = RUBRIQUES.map(rb => {
+      const pastilles = RUBRIQUES.filter(rb => !rb.apart).map(rb => {
         const mods = modulesOfRubrique(rb).filter(m => m.ready);
         const off = noGroupe || mods.length === 0;
         return `
@@ -4684,10 +4687,25 @@ const CALCUL_TEMPLATES = {
           </button>
         </div>` : "";
 
+      const msg = RUBRIQUES.find(rb => rb.apart);
+      const pastilleMessagerie = `
+        <button class="rubrique rubrique-apart ${noGroupe ? "disabled" : ""}"
+                data-rubrique="${msg.id}" ${noGroupe ? "disabled" : ""}>
+          ${unread ? `<span class="rubrique-dot" title="Nouveau message"></span>` : ""}
+          <span class="rubrique-disc">${RUBRIQUE_ICONS[msg.id]}</span>
+          <span class="rubrique-name">${msg.label}</span>
+          ${unread ? `<span class="rubrique-count">Nouveau message</span>` : ""}
+        </button>`;
+
       content.innerHTML = `
         <div class="menu-intro">
-          <h1>Bonjour ${prenom}</h1>
-          <p>Choisissez une rubrique pour accéder à ses modules.</p>
+          <div class="menu-header-row">
+            <div>
+              <h1>Bonjour ${prenom}</h1>
+              <p>Choisissez une rubrique pour accéder à ses modules.</p>
+            </div>
+            ${pastilleMessagerie}
+          </div>
         </div>
         ${alerteGroupe}
         <div class="rubriques">${pastilles}</div>
