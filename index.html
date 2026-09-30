@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Suite Logistique — Lycée Gaston Darboux</title>
+<title>Suite Logistique — Famille des métiers GATL</title>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
@@ -660,6 +660,24 @@
     appId: "1:1072068656937:web:8202acdb094c6fa6a78138",
     measurementId: "G-3WNG14BFRC"
   };
+
+  /* ============================================================
+     IDENTITÉ DE L'ÉTABLISSEMENT — À PERSONNALISER (facultatif)
+     Le site est générique : aucun lycée n'est nommé par défaut.
+     Renseignez ETABLISSEMENT.nom et .adresse si vous souhaitez
+     les voir apparaître sur les bons imprimés et en en-tête.
+     Laissez les chaînes vides pour rester entièrement générique.
+     ============================================================ */
+  const ETABLISSEMENT = {
+    nom: "",
+    adresse: "",
+    ville: ""
+  };
+  const APP_NOM = "Suite Logistique";
+  const APP_BASELINE = "Famille des métiers GATL";
+  const LIGNE_INSTITUTION = (ETABLISSEMENT.nom
+    ? `${ETABLISSEMENT.nom}${ETABLISSEMENT.ville ? " — " + ETABLISSEMENT.ville : ""}`
+    : "FAMILLE DES MÉTIERS GATL").toUpperCase();
 
   /* ============ CONFIG : TABLES DU MODULE MAGASIN ============ */
   const TABLES = {
@@ -4360,10 +4378,10 @@ const CALCUL_TEMPLATES = {
       app.innerHTML = `
         <header class="topbar">
           <div class="brand">
-            <div class="brand-mark">GD</div>
+            <div class="brand-mark">SL</div>
             <div>
-              <div class="brand-name">Lycée Gaston Darboux</div>
-              <div class="brand-tagline">Bac Pro Logistique · Nîmes</div>
+              <div class="brand-name">${APP_NOM}</div>
+              <div class="brand-tagline">${ETABLISSEMENT.nom || APP_BASELINE}</div>
             </div>
           </div>
           <div class="session-chip">
@@ -4401,7 +4419,7 @@ const CALCUL_TEMPLATES = {
     app.innerHTML = `
       <div class="center-stage">
         <div class="badge-card">
-          <div class="institution-line">LYCÉE GASTON DARBOUX — NÎMES</div>
+          <div class="institution-line">${LIGNE_INSTITUTION}</div>
           <div class="badge-icon">CONNEXION À LA BASE</div>
           <h1>${isConfigIssue ? "Configuration manquante" : "Base inaccessible"}</h1>
           <p class="sub">${isConfigIssue
@@ -4426,7 +4444,7 @@ const CALCUL_TEMPLATES = {
     app.innerHTML = `
       <div class="center-stage">
         <div class="badge-card">
-          <div class="institution-line">LYCÉE GASTON DARBOUX — NÎMES</div>
+          <div class="institution-line">${LIGNE_INSTITUTION}</div>
           <div class="badge-icon">CONFIGURATION INITIALE</div>
           <h1>Créer le compte enseignant</h1>
           <p class="sub">Aucun compte n'existe encore dans cette suite. Créez le premier compte, avec les droits enseignant.</p>
@@ -4455,7 +4473,7 @@ const CALCUL_TEMPLATES = {
     app.innerHTML = `
       <div class="center-stage">
         <div class="badge-card">
-          <div class="institution-line">LYCÉE GASTON DARBOUX — NÎMES</div>
+          <div class="institution-line">${LIGNE_INSTITUTION}</div>
           <div class="badge-icon">BADGE D'ACCÈS</div>
           <h1>Connexion</h1>
           <p class="sub">Entrez votre matricule et votre mot de passe pour accéder à la suite.</p>
@@ -4593,7 +4611,7 @@ const CALCUL_TEMPLATES = {
       <div class="section-heading"><span>Seconde GATL</span></div>
       <div class="module-grid">${secondeTiles}</div>
 
-      <footer class="site-footer">Lycée professionnel Gaston Darboux — 7 rue Jules Raimu, Nîmes · Bac Pro Métiers de la Logistique</footer>
+      <footer class="site-footer">${APP_NOM} · ${APP_BASELINE} — Gestion Administration, Transport, Logistique</footer>
     `;
 
     if(state.currentUser.role === "enseignant"){
@@ -5550,7 +5568,7 @@ const CALCUL_TEMPLATES = {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${state.activeTable}-magasin-darboux.csv`;
+      a.download = `${state.activeTable}-magasin.csv`;
       a.click();
       URL.revokeObjectURL(url);
     });
@@ -6047,7 +6065,9 @@ const CALCUL_TEMPLATES = {
 
   const CONDITIONS_PORT = ["Franco de port", "Port dû", "Port payé forfaitaire"];
 
-  const LYCEE_ADRESSE = "Lycée professionnel Gaston Darboux — 7 rue Jules Raimu, 30900 Nîmes";
+  const LYCEE_ADRESSE = ETABLISSEMENT.nom
+    ? `${ETABLISSEMENT.nom} — ${ETABLISSEMENT.adresse}`
+    : "Magasin pédagogique — Famille des métiers GATL";
 
   function renderLivraisonSettingsHTML(c){
     const conditions = c.fraisPort || "";
@@ -6170,7 +6190,7 @@ const CALCUL_TEMPLATES = {
     const printAreaHTML = docView === "livraison" ? renderBonLivraisonHTML(c) : `
       <div class="bon-header">
         <div>
-          <div class="institution-line">LYCÉE GASTON DARBOUX — NÎMES</div>
+          <div class="institution-line">${LIGNE_INSTITUTION}</div>
           <h2 style="border:none; padding:0; margin:4px 0;">Bon de préparation ${c.numero}</h2>
           <div class="hint">Groupe ${state.activeGroupe} · Créé par ${c.createdByNom} le ${new Date(c.createdAt).toLocaleString("fr-FR")}</div>
         </div>
@@ -6557,7 +6577,7 @@ const CALCUL_TEMPLATES = {
       <div class="panel" id="printArea" style="margin-top:16px;">
         <div class="bon-header">
           <div>
-            <div class="institution-line">LYCÉE GASTON DARBOUX — NÎMES</div>
+            <div class="institution-line">${LIGNE_INSTITUTION}</div>
             <h2 style="border:none; padding:0; margin:4px 0;">Bon de contrôle réception ${r.numero}</h2>
             <div class="hint">Groupe ${state.activeGroupe} · Fournisseur : <strong>${r.fournisseurNom}</strong> · Créé par ${r.createdByNom} le ${new Date(r.createdAt).toLocaleString("fr-FR")}</div>
             ${r.commandeRefNumero ? `<div class="hint">En lien avec la préparation ${r.commandeRefNumero}</div>` : ""}
