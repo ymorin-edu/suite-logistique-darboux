@@ -166,10 +166,10 @@
 
   /* ---- Pastilles de rubrique (page d'accueil) ---- */
   .rubriques{
-    display:grid; grid-template-columns: repeat(4, 1fr);
-    gap: 10px; margin: 4px 0 8px;
+    display:flex; flex-wrap: wrap; gap: 4px 16px; margin: 4px 0 8px;
   }
-  @media (max-width: 760px){ .rubriques{ grid-template-columns: repeat(3, 1fr); } }
+  .rubriques > .rubrique{ width: 152px; }
+  .rubriques-sep{ height:1px; background: var(--line); margin: 20px 0; }
   .rubrique{
     position:relative; background:none; border:none; cursor:pointer;
     font-family: var(--sans); color: var(--ink);
@@ -204,15 +204,14 @@
   .rubrique.disabled{ opacity: .42; cursor: default; }
   .rubrique.disabled:hover{ background:none; }
   .rubrique.disabled:hover .rubrique-disc{ background: var(--steel); transform:none; }
-  .rubriques.staff{ grid-template-columns: repeat(6, 1fr); }
-  @media (max-width: 760px){ .rubriques.staff{ grid-template-columns: repeat(4, 1fr); } }
+  .rubriques.staff > .rubrique{ width: 124px; }
   .rubriques.staff .rubrique-disc{ width: 60px; height: 60px; background: var(--panel);
     color: var(--steel); border: 1px solid var(--line); }
   .rubriques.staff .rubrique:hover .rubrique-disc{ background: #eef2f6; color: var(--ink); border-color: var(--steel); }
   .rubriques.staff .rubrique-disc svg{ width: 26px; height: 26px; }
   .rubriques.staff .rubrique-name{ font-size: 13px; font-weight: 600; }
   @media (max-width: 420px){
-    .rubriques{ grid-template-columns: repeat(2, 1fr); }
+    .rubriques > .rubrique{ width: calc(50% - 8px); }
     .rubrique-disc{ width: 74px; height: 74px; }
     .rubrique-disc svg{ width: 34px; height: 34px; }
   }
@@ -865,20 +864,30 @@
 
   /* ============ RUBRIQUES : les pastilles de la page d'accueil ============ */
   const RUBRIQUES = [
-    { id: "magasin",      label: "Magasin",       ids: ["magasin"],
-      desc: "La base du magasin pédagogique : produits, emplacements, fournisseurs et état du stock." },
-    { id: "messagerie",   label: "Messagerie",    ids: ["messagerie"], apart: true,
-      desc: "Écrire à l'enseignant et suivre les réponses." },
-    { id: "activite",     label: "Logistique",    ids: ["chaine", "picking", "reception"],
-      desc: "La chaîne logistique de bout en bout, puis les deux opérations du quai : préparer une commande, contrôler une réception." },
-    { id: "cours",        label: "Tableur",       cat: "cours",
-      desc: "Les progressions Excel, du premier tableau aux compétences du référentiel." },
-    { id: "etude-de-cas", label: "Scénario",      cat: "etude-de-cas",
+    /* bande 1 — les domaines de la famille de métiers */
+    { id: "activite",     label: "Logistique",  bande: 1,
+      ids: ["chaine", "picking", "reception", "pole1", "pole2", "pole3"],
+      desc: "La chaîne logistique de bout en bout, les opérations du quai, et les exercices notés par compétence du référentiel." },
+    { id: "transport",    label: "Transport",   bande: 1, cat: "transport",
+      desc: "Agenda des créneaux de quai et fiches véhicules de la flotte." },
+    { id: "gestion",      label: "Gestion",     bande: 1, ids: ["calccom"],
+      desc: "Les calculs commerciaux de l'entreprise : devis, remises, TVA, coefficients, coût de revient." },
+
+    /* bande 2 — les formes d'entraînement */
+    { id: "etude-de-cas", label: "Scénario",    bande: 2, cat: "etude-de-cas",
       desc: "Des situations d'entreprise complètes, à traiter du début à la fin. Exercices notés." },
-    { id: "entrainement", label: "Quiz",          cat: "entrainement",
+    { id: "entrainement", label: "Quiz",        bande: 2, cat: "entrainement",
       desc: "Séries de questions courtes pour réviser : calcul, géographie, français, CACES." },
-    { id: "transport",    label: "Transport",     cat: "transport",
-      desc: "Agenda des créneaux de quai et fiches véhicules de la flotte." }
+    { id: "cours",        label: "Tableur",     bande: 2, ids: ["excel", "excelstock", "capol"],
+      desc: "Apprendre Excel pas à pas, sur des cas de logistique." },
+
+    /* bande 3 — l'outil de travail */
+    { id: "magasin",      label: "Magasin",     bande: 3, ids: ["magasin"],
+      desc: "La base du magasin pédagogique : produits, emplacements, fournisseurs et état du stock." },
+
+    /* hors bandes — accès permanent en haut de page */
+    { id: "messagerie",   label: "Messagerie",  apart: true, ids: ["messagerie"],
+      desc: "Écrire à l'enseignant et suivre les réponses." }
   ];
 
   const RUBRIQUE_ICONS = {
@@ -888,6 +897,7 @@
     "cours": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter" aria-hidden="true"><path d="M4 4h5.5a2.5 2.5 0 0 1 2.5 2.5V20a2.2 2.2 0 0 0-2.2-1.8H4z"/><path d="M20 4h-5.5A2.5 2.5 0 0 0 12 6.5V20a2.2 2.2 0 0 1 2.2-1.8H20z"/></svg>`,
     "etude-de-cas": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter" aria-hidden="true"><path d="M3 6h6l2 2h10v11H3z"/><circle cx="14" cy="14" r="3"/><path d="M16.3 16.3L19 19"/></svg>`,
     "entrainement": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l3 2M9.5 2h5M12 2v3"/></svg>`,
+    "gestion": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter" aria-hidden="true"><rect x="4" y="3" width="16" height="18"/><path d="M7.5 7.5h9M7.5 11.5h3M13.5 11.5h3M7.5 15.5h3M13.5 15.5h3"/></svg>`,
     "transport": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter" aria-hidden="true"><path d="M2 7h12v10H2z"/><path d="M14 10h4l3 4v3h-7z"/><circle cx="6.5" cy="17.5" r="2.2"/><circle cx="17" cy="17.5" r="2.2"/></svg>`,
     "admin": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter" aria-hidden="true"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c.9-4 3.9-6 7.5-6s6.6 2 7.5 6"/></svg>`,
     "referentiel": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="miter" aria-hidden="true"><rect x="4" y="3" width="16" height="18"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>`,
@@ -4654,17 +4664,20 @@ const CALCUL_TEMPLATES = {
 
     if(!rub){
       /* ---------- Accueil : les pastilles de rubrique ---------- */
-      const pastilles = RUBRIQUES.filter(rb => !rb.apart).map(rb => {
+      function pastilleHTML(rb){
         const mods = modulesOfRubrique(rb).filter(m => m.ready);
         const off = noGroupe || mods.length === 0;
         return `
           <button class="rubrique ${off ? "disabled" : ""}" data-rubrique="${rb.id}" ${off ? "disabled" : ""}>
-            ${rb.id === "messagerie" && unread ? `<span class="rubrique-dot" title="Nouveau message"></span>` : ""}
             <span class="rubrique-disc">${RUBRIQUE_ICONS[rb.id]}</span>
             <span class="rubrique-name">${rb.label}</span>
             <span class="rubrique-count">${mods.length} module${mods.length > 1 ? "s" : ""}</span>
           </button>`;
-      }).join("");
+      }
+      const bandes = [...new Set(RUBRIQUES.filter(rb => rb.bande).map(rb => rb.bande))].sort();
+      const pastilles = bandes.map(b => `
+        <div class="rubriques">${RUBRIQUES.filter(rb => rb.bande === b).map(pastilleHTML).join("")}</div>`
+      ).join(`<div class="rubriques-sep"></div>`);
 
       const staff = state.currentUser.role === "enseignant" ? `
         <div class="section-heading"><span>Espace enseignant</span></div>
@@ -4708,7 +4721,7 @@ const CALCUL_TEMPLATES = {
           </div>
         </div>
         ${alerteGroupe}
-        <div class="rubriques">${pastilles}</div>
+        ${pastilles}
         ${staff}
         ${footer}
       `;
