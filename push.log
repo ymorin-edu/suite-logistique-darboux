@@ -6681,3 +6681,15 @@ To https://github.com/ymorin-edu/suite-logistique-darboux.git
    1d76808..2a31901  main -> main
 Pousse avec succes.
 ----- 07/10/2026 18:54:19,64 -----
+warning: in the working copy of 'push.log', LF will be replaced by CRLF the next time Git touches it
+push.log
+[main f157c8f] Mise a jour du site - 2026-10-07 18:54
+ 1 file changed, 8 insertions(+)
+remote: Internal Server Error        
+remote: Request ID 0C6A:2C0CBC:44C1D09:41CA1DF:6AC6793C        
+remote: Time 2026-10-07T16:54:21Z
+To https://github.com/ymorin-edu/suite-logistique-darboux.git
+ ! [remote rejected] main -> main (Internal Server Error)
+error: failed to push some refs to 'https://github.com/ymorin-edu/suite-logistique-darboux.git'
+[ERREUR] Le push a echoue - probablement un probleme d'identifiants. Ouvre GitHub Desktop et clique sur Push origin.
+----- 07/10/2026 19:04:19,60 -----
