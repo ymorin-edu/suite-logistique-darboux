@@ -6609,3 +6609,11 @@ To https://github.com/ymorin-edu/suite-logistique-darboux.git
 error: failed to push some refs to 'https://github.com/ymorin-edu/suite-logistique-darboux.git'
 [ERREUR] Le push a echoue - probablement un probleme d'identifiants. Ouvre GitHub Desktop et clique sur Push origin.
 ----- 07/10/2026 17:24:19,57 -----
+warning: in the working copy of 'push.log', LF will be replaced by CRLF the next time Git touches it
+push.log
+[main 0d258d8] Mise a jour du site - 2026-10-07 17:24
+ 1 file changed, 12 insertions(+)
+To https://github.com/ymorin-edu/suite-logistique-darboux.git
+   e2a474a..0d258d8  main -> main
+Pousse avec succes.
+----- 07/10/2026 17:34:19,59 -----
