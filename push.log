@@ -28242,3 +28242,11 @@ To https://github.com/ymorin-edu/suite-logistique-darboux.git
    f43a150..a0b4f1a  main -> main
 Pousse avec succes.
 ----- 04/11/2026 11:34:19,60 -----
+warning: in the working copy of 'push.log', LF will be replaced by CRLF the next time Git touches it
+push.log
+[main 0fbdd42] Mise a jour du site - 2026-11-04 11:34
+ 1 file changed, 8 insertions(+)
+To https://github.com/ymorin-edu/suite-logistique-darboux.git
+   a0b4f1a..0fbdd42  main -> main
+Pousse avec succes.
+----- 04/11/2026 11:44:19,61 -----
