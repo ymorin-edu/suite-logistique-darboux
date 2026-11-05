@@ -29322,3 +29322,14 @@ To https://github.com/ymorin-edu/suite-logistique-darboux.git
    89f6bc1..41f0f53  main -> main
 Pousse avec succes.
 ----- 05/11/2026 17:04:19,60 -----
+warning: in the working copy of 'push.log', LF will be replaced by CRLF the next time Git touches it
+push.log
+[main 620cf21] Mise a jour du site - 2026-11-05 17:04
+ 1 file changed, 8 insertions(+)
+remote: fatal error in commit_refs_rules        
+To https://github.com/ymorin-edu/suite-logistique-darboux.git
+ ! [remote rejected] main -> main (fatal error in commit_refs_rules
+)
+error: failed to push some refs to 'https://github.com/ymorin-edu/suite-logistique-darboux.git'
+[ERREUR] Le push a echoue - probablement un probleme d'identifiants. Ouvre GitHub Desktop et clique sur Push origin.
+----- 05/11/2026 17:14:19,57 -----
