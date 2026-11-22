@@ -42209,3 +42209,11 @@ Omit --global to set the identity only in this repository.
 fatal: unable to auto-detect email address (got 'trist@Tristan.(none)')
 [ERREUR] Le commit a echoue.
 ----- 22/11/2026  7:54:19,69 -----
+warning: in the working copy of 'push.log', LF will be replaced by CRLF the next time Git touches it
+push.log
+[main ba2c264] Mise a jour du site - 2026-11-22 07:54
+ 1 file changed, 25 insertions(+)
+To https://github.com/ymorin-edu/suite-logistique-darboux.git
+   8f8b0a4..ba2c264  main -> main
+Pousse avec succes.
+----- 22/11/2026  8:04:19,62 -----
